@@ -1,0 +1,6 @@
+FROM payara/server-full:6.2023.9-jdk17
+
+COPY lib/ $PAYARA_DIR/glassfish/domains/domain1/lib/
+RUN echo 'create-jdbc-connection-pool --datasourceclassname org.postgresql.ds.PGSimpleDataSource --restype javax.sql.DataSource --property user=postgres:password=abc123:servername=postgresHOST:portnumber=5432:databasename=parqueo pg_localhost_parqueo' >> /opt/payara/config/pre-boot-commands.asadmin
+RUN echo 'create-jdbc-resource --connectionpoolid pg_localhost_parqueo jdbc/pgdb' >> /opt/payara/config/pre-boot-commands.asadmin
+COPY ParqueoWebapp-1.0-SNAPSHOT.war  $DEPLOY_DIR

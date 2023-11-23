@@ -1,0 +1,50 @@
+version: '3.3'
+
+services:
+  pgAdmin:
+    image: dpage/pgadmin4:latest
+    container_name: contenedor_pgAdmin_Parqueo
+    depends_on:
+      - dbPostgres
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=example@email.com
+      - PGADMIN_DEFAULT_PASSWORD=abc123
+      - PGADMIN_LISTEN_PORT=5050
+    ports:
+      - 5050:5050
+    networks:
+      - parqueoRed
+    
+
+  dbPostgres:
+    image: postgres:15.3-alpine3.18
+    container_name: contenedor_db_Parqueo
+    environment:
+      - POSTGRES_PASSWORD=abc123
+      - POSTGRES_DB=parqueo
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/scripts:/docker-entrypoint-initdb.d
+    networks:
+      - parqueoRed
+    hostname: postgresHOST
+
+  payaraserver:
+    build: ./payara
+    container_name: contenedor_server_Parqueo
+    depends_on:
+      - dbPostgres
+      - pgAdmin
+    ports:
+      - 4848:4848
+      - 8080:8080
+    networks:
+      - parqueoRed
+
+networks:
+  parqueoRed:
+
+volumes:
+  postgres_data:
