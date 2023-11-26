@@ -42,6 +42,7 @@ services:
       - 8080:8080
     networks:
       - parqueoRed
+    hostname: www.payarahost.xyz
 
 networks:
   parqueoRed:
